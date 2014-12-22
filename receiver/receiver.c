@@ -65,8 +65,16 @@ int main()
                 // Separate axis identifier from joystick positions
                 js_axis = grab_axis(from_rx);
                 js_value = grab_value(from_rx);
-                printf("A: %i  V: %i\n",js_axis, js_value);
-                //serialFlush(uart_fd);
+                if(js_axis < 0 || js_axis > 3)
+                {
+                    // Invalid axis
+                    continue;
+                }
+                else
+                {
+                    printf("A: %i  V: %i\n", js_axis, js_value);
+                }
+                serialFlush(uart_fd);
             }
         }
     }
