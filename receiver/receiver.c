@@ -4,15 +4,15 @@
 
 int grab_axis(char *input)
 {
-    char *axis_id_str, input_copy[8];
-    char *delim = "x";
+    char input_copy[8];
     int axis_id;
 
     strcpy(input_copy, input);
 
-    axis_id_str = strtok(input_copy, delim);
+    char axis_id_char = input_copy[0];
 
-    axis_id = atoi(axis_id_str);
+    //Convert to int
+    axis_id = axis_id_char - '0';
 
     return axis_id;
 }
@@ -20,15 +20,21 @@ int grab_axis(char *input)
 int grab_value(char *input)
 {
     char *value_str, input_copy[8];
-    char *delim = "x";
-    int value;
+    signed int value;
 
     strcpy(input_copy, input);
 
-    value_str = strtok(input_copy, delim);
-    value_str = strtok(NULL, delim);
+    // Strip last 5 charactes of string
+    int len = strlen(input_copy);
+    value_str = &input_copy[len-5];
 
     value = atoi(value_str);
+
+    // If identifier (2nd char of string) is n, make value negative
+    if( input_copy[1] == 'n' )
+    {
+        value = -value;
+    }
 
     return value;
 }
@@ -57,14 +63,13 @@ int main()
                 printf("%i bytes read : %s\n", receive, from_rx);
 
                 // Separate axis identifier from joystick positions
-                /*js_axis = grab_axis(from_rx);
+                js_axis = grab_axis(from_rx);
                 js_value = grab_value(from_rx);
-                printf("A: %i  V: %i\n",js_axis, js_value);*/
+                printf("A: %i  V: %i\n",js_axis, js_value);
                 //serialFlush(uart_fd);
             }
         }
     }
-
     serialClose(uart_fd);
     return 0;
 }
